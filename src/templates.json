@@ -1,0 +1,131 @@
+[
+  {
+    "name": "Ransomware via VPN gateway",
+    "graph": {
+      "nodes": [
+        {
+          "id": "vpn",
+          "type": "firewall",
+          "label": "VPN gateway",
+          "x": 160,
+          "y": 150
+        },
+        {
+          "id": "laptop",
+          "type": "workstation",
+          "label": "Remote employee",
+          "x": 420,
+          "y": 150
+        },
+        {
+          "id": "files",
+          "type": "server",
+          "label": "File server",
+          "x": 680,
+          "y": 150
+        },
+        {
+          "id": "backup",
+          "type": "cloud",
+          "label": "Backup storage",
+          "x": 680,
+          "y": 390
+        }
+      ],
+      "edges": [
+        { "fromId": "vpn", "toId": "laptop" },
+        { "fromId": "laptop", "toId": "files" },
+        { "fromId": "files", "toId": "backup" }
+      ]
+    }
+  },
+  {
+    "name": "Insider threat",
+    "graph": {
+      "nodes": [
+        {
+          "id": "employee",
+          "type": "workstation",
+          "label": "Privileged employee",
+          "x": 160,
+          "y": 280
+        },
+        {
+          "id": "identity",
+          "type": "cloud",
+          "label": "Identity provider",
+          "x": 420,
+          "y": 150
+        },
+        {
+          "id": "database",
+          "type": "server",
+          "label": "Customer database",
+          "x": 680,
+          "y": 280
+        },
+        {
+          "id": "app",
+          "type": "server",
+          "label": "Internal application",
+          "x": 420,
+          "y": 410
+        }
+      ],
+      "edges": [
+        { "fromId": "employee", "toId": "identity" },
+        { "fromId": "employee", "toId": "app" },
+        { "fromId": "identity", "toId": "database" },
+        { "fromId": "app", "toId": "database" },
+        { "fromId": "database", "toId": "app" }
+      ]
+    }
+  },
+  {
+    "name": "Supply-chain vendor compromise",
+    "graph": {
+      "nodes": [
+        {
+          "id": "vendor",
+          "type": "vendor",
+          "label": "Software supplier",
+          "x": 160,
+          "y": 160
+        },
+        {
+          "id": "build",
+          "type": "server",
+          "label": "Build runner",
+          "x": 420,
+          "y": 160
+        },
+        {
+          "id": "prod",
+          "type": "cloud",
+          "label": "Production cloud",
+          "x": 680,
+          "y": 160
+        },
+        {
+          "id": "staff",
+          "type": "workstation",
+          "label": "Developer laptop",
+          "x": 420,
+          "y": 400
+        },
+        {
+          "id": "isolated",
+          "type": "server",
+          "label": "Isolated archive",
+          "x": 680,
+          "y": 400
+        }
+      ],
+      "edges": [
+        { "fromId": "vendor", "toId": "build" },
+        { "fromId": "build", "toId": "prod" },
+        { "fromId": "vendor", "toId": "staff" }
+      ]
+    }
+  }
+]
