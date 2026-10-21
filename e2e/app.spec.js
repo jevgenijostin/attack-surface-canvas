@@ -141,7 +141,8 @@ test("move, rename and remove an asset and its relationships", async ({
   ).not.toBe(before);
   await page.locator(".node").first().click();
   await page.getByLabel("Asset label").fill("Renamed server");
-  await page.getByLabel("Asset label").press("Tab");
+  await page.getByRole("button", { name: "Compromise", exact: true }).click();
+  await expect(page.locator(".total")).toHaveText("2");
   await expect(page.locator(".node").first()).toHaveAttribute(
     "aria-label",
     "Renamed server, Server",

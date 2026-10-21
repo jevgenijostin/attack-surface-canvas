@@ -165,7 +165,7 @@ function render() {
     input.id = "asset-label";
     input.value = n.label;
     input.maxLength = 80;
-    input.onchange = () => {
+    input.oninput = () => {
       graph = {
         ...graph,
         nodes: graph.nodes.map((v) =>
@@ -174,7 +174,10 @@ function render() {
             : v,
         ),
       };
-      changed();
+      dirty = true;
+      result = [];
+      renderCanvas();
+      renderResults();
     };
     panel.append(label, input);
     button(
@@ -232,6 +235,10 @@ function render() {
         "wide subtle",
       );
   }
+  renderResults();
+  renderScenarios();
+}
+function renderResults() {
   const results = $("#results");
   if (result.length) {
     const summary = summarize(graph, result);
@@ -255,7 +262,6 @@ function render() {
   } else
     results.innerHTML =
       '<div class="result-placeholder">◎</div><p class="muted">Run a compromise to reveal reachable assets and their shortest hop distance.</p>';
-  renderScenarios();
 }
 function renderScenarios() {
   const list = $("#saved");
