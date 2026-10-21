@@ -4,17 +4,21 @@ export const SCENARIOS_KEY = "asc.scenarios.v1";
 export function readScenarios(storage) {
   const list = JSON.parse(storage.getItem(SCENARIOS_KEY) || "[]");
   if (!Array.isArray(list)) throw Error("Saved scenarios are invalid");
-  for (const s of list) {
-    if (
-      !s ||
-      typeof s.name !== "string" ||
-      !s.name.trim() ||
-      s.name.length > 60
-    )
-      throw Error("Invalid scenario name");
-    validateGraph(s.graph);
-  }
-  return list;
+  return list.filter((s) => {
+    try {
+      if (
+        !s ||
+        typeof s.name !== "string" ||
+        !s.name.trim() ||
+        s.name.length > 60
+      )
+        return false;
+      validateGraph(s.graph);
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 export function saveScenario(storage, name, graph, paid) {
   name = name.trim();

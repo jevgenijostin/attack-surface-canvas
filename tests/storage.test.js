@@ -25,11 +25,43 @@ it("permits overwrite but blocks second free scenario", () => {
   saveScenario(s, "Two", emptyGraph(), true);
   expect(readScenarios(s)).toHaveLength(2);
 });
-it("rejects empty names and corrupt data without overwriting", () => {
+it("rejects empty names and skips corrupt entries without changing storage on read", () => {
   const s = storage();
   expect(() => saveScenario(s, " ", emptyGraph(), false)).toThrow();
+  const raw = JSON.stringify([{ name: "Broken", graph: null }]);
+  s.setItem(SCENARIOS_KEY, raw);
+  expect(readScenarios(s)).toEqual([]);
+  expect(s.getItem(SCENARIOS_KEY)).toBe(raw);
+  saveScenario(s, "One", emptyGraph(), true);
+  expect(readScenarios(s)).toEqual([{ name: "One", graph: emptyGraph() }]);
+});
+it("rejects unreadable JSON without overwriting it", () => {
+  const s = storage();
   s.setItem(SCENARIOS_KEY, "broken");
   expect(() => readScenarios(s)).toThrow();
   expect(() => saveScenario(s, "One", emptyGraph(), true)).toThrow();
   expect(s.getItem(SCENARIOS_KEY)).toBe("broken");
 });
+it.each([
+  null,
+  { name: " ", graph: emptyGraph() },
+  { name: "Broken", graph: null },
+  { name: "Broken", graph: { nodes: [null], edges: [] } },
+])(
+  "keeps valid scenarios readable and deletable beside corrupt entry %j",
+  (bad) => {
+    const s = storage();
+    const valid = { name: "One", graph: emptyGraph() };
+    for (const entries of [
+      [bad, valid],
+      [valid, bad],
+    ]) {
+      const raw = JSON.stringify(entries);
+      s.setItem(SCENARIOS_KEY, raw);
+      expect(readScenarios(s)).toEqual([valid]);
+      expect(s.getItem(SCENARIOS_KEY)).toBe(raw);
+      deleteScenario(s, "One");
+      expect(readScenarios(s)).toEqual([]);
+    }
+  },
+);
