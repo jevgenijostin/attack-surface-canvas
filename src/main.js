@@ -10,7 +10,12 @@ import {
   computeBlastRadius,
   summarize,
 } from "./graph.js";
-import { verifyLicense, canAddNode, canLoadTemplate } from "./license.js";
+import {
+  verifyLicense,
+  canAddNode,
+  canLoadTemplate,
+  FREE_NODE_CAP,
+} from "./license.js";
 import { readScenarios, saveScenario, deleteScenario } from "./storage.js";
 import templates from "./templates.json";
 
@@ -146,7 +151,7 @@ function render() {
     `${graph.nodes.length} assets · ${graph.edges.length} trust links`;
   $("#budget").textContent = paid
     ? "Unlimited assets"
-    : `${graph.nodes.length} / 8 free assets`;
+    : `${graph.nodes.length} / ${FREE_NODE_CAP} free assets`;
   $("#tier").textContent = paid ? "Demo Pro" : "Free tier";
   const panel = $("#selection");
   panel.replaceChildren();
@@ -304,9 +309,9 @@ function renderScenarios() {
   }
 }
 function load(g, name) {
-  if (!paid && g.nodes.length > 8) {
+  if (!paid && g.nodes.length > FREE_NODE_CAP) {
     message(
-      "Free tier allows 8 nodes. Activate Demo Pro to load this scenario.",
+      `Free tier allows ${FREE_NODE_CAP} nodes. Activate Demo Pro to load this scenario.`,
     );
     return;
   }
@@ -363,7 +368,7 @@ $("#canvas").addEventListener("pointerdown", (e) => {
     protect(() => {
       if (!canAddNode(paid, graph.nodes.length))
         throw Error(
-          "Free tier allows 8 nodes. Activate Demo Pro for unlimited assets.",
+          `Free tier allows ${FREE_NODE_CAP} nodes. Activate Demo Pro for unlimited assets.`,
         );
       const p = point(e);
       graph = addNode(graph, {

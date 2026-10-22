@@ -37,25 +37,28 @@ test("add two assets, drag connection, compromise and highlight downstream", asy
   await expect(nodes.first()).toHaveAttribute("data-depth", "0");
   await expect(page.locator(".total")).toHaveText("2");
 });
-test("blocks the ninth free asset with a clear cap message", async ({
+test("blocks the 21st free asset with a clear cap message", async ({
   page,
 }) => {
-  for (let i = 0; i < 8; i++)
+  for (let i = 0; i < 20; i++)
     await add(
       page,
       "Server",
-      120 + (i % 4) * 220,
-      100 + Math.floor(i / 4) * 300,
+      100 + (i % 5) * 180,
+      80 + Math.floor(i / 5) * 150,
     );
   await page
     .getByRole("button", { name: /Server$/ })
     .first()
     .click();
   const box = await page.locator("#canvas").boundingBox();
-  await page.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.85);
-  await expect(page.locator(".node")).toHaveCount(8);
+  await page.mouse.click(
+    box.x + box.width * 0.5,
+    box.y + (600 / 650) * box.height,
+  );
+  await expect(page.locator(".node")).toHaveCount(20);
   await expect(page.getByRole("status")).toContainText(
-    "Free tier allows 8 nodes",
+    "Free tier allows 20 nodes",
   );
 });
 test("save, reload and load a persistent scenario", async ({ page }) => {
@@ -101,18 +104,13 @@ test("deletes a saved scenario persistently", async ({ page }) => {
     page.getByRole("button", { name: "Load Disposable" }),
   ).toHaveCount(0);
 });
-test("paid tier allows more than eight nodes and multiple scenarios", async ({
+test("paid tier allows more than twenty nodes and multiple scenarios", async ({
   page,
 }) => {
   await activate(page);
-  for (let i = 0; i < 9; i++)
-    await add(
-      page,
-      "Server",
-      120 + (i % 3) * 300,
-      100 + Math.floor(i / 3) * 200,
-    );
-  await expect(page.locator(".node")).toHaveCount(9);
+  for (let i = 0; i < 21; i++)
+    await add(page, "Server", 80 + (i % 6) * 150, 80 + Math.floor(i / 6) * 150);
+  await expect(page.locator(".node")).toHaveCount(21);
   await page.getByLabel("Scenario name").fill("One");
   await page
     .getByRole("button", { name: "Save scenario", exact: true })

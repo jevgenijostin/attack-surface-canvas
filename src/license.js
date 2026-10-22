@@ -22,7 +22,8 @@ export async function verifyLicense(value) {
     return false;
   return value === (await issueDemoLicense());
 }
-export const canAddNode = (paid, count) => paid || count < 8;
+export const FREE_NODE_CAP = 20;
+export const canAddNode = (paid, count) => paid || count < FREE_NODE_CAP;
 export const canSaveScenario = (paid, count, replacing = false) =>
   paid || replacing || count < 1;
 export const canLoadTemplate = (paid) => paid;

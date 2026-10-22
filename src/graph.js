@@ -4,6 +4,10 @@ export const TYPES = {
   workstation: { label: "Workstation", icon: "▣", color: "#bca1ff" },
   cloud: { label: "Cloud service", icon: "☁", color: "#65d5d0" },
   vendor: { label: "Vendor", icon: "◇", color: "#f394b1" },
+  router: { label: "Router", icon: "⇆", color: "#8bc34a" },
+  switch: { label: "Switch", icon: "☰", color: "#d9c23a" },
+  access_point: { label: "Access Point", icon: "◎", color: "#4fc3f7" },
+  iot_device: { label: "Smart/IoT device", icon: "✦", color: "#ab47bc" },
 };
 export const emptyGraph = () => ({ nodes: [], edges: [] });
 export function validateGraph(g) {

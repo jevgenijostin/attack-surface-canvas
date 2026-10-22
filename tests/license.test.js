@@ -7,6 +7,7 @@ import {
   canAddNode,
   canSaveScenario,
   canLoadTemplate,
+  FREE_NODE_CAP,
 } from "../src/license.js";
 it("accepts a valid independently signed HMAC key", async () => {
   const key =
@@ -28,8 +29,8 @@ it.each([
 });
 it("enforces free caps before activation", async () => {
   const paid = await verifyLicense("invalid");
-  expect(canAddNode(paid, 7)).toBe(true);
-  expect(canAddNode(paid, 8)).toBe(false);
+  expect(canAddNode(paid, FREE_NODE_CAP - 1)).toBe(true);
+  expect(canAddNode(paid, FREE_NODE_CAP)).toBe(false);
   expect(canSaveScenario(paid, 0)).toBe(true);
   expect(canSaveScenario(paid, 1)).toBe(false);
   expect(canSaveScenario(paid, 1, true)).toBe(true);
